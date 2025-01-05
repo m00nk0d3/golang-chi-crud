@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/m00nk0d3/golang-chi-crud/handlers"
 )
 
 func main() {
@@ -13,5 +14,17 @@ func main() {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK"))
 	})
+	r.Mount("/books", BookRoutes())
 	http.ListenAndServe(":3000", r)
+}
+
+func BookRoutes() chi.Router {
+	r := chi.NewRouter()
+	bookHandler := handlers.BookHandler{}
+	r.Get("/", bookHandler.LisBooks)
+	r.Post("/", bookHandler.CreateBook)
+	r.Get("/{id}", bookHandler.GetBooks)
+	r.Put("/{id}", bookHandler.UpdateBook)
+	r.Delete("/{id}", bookHandler.DeleteBook)
+	return r
 }
